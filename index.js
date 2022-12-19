@@ -37,7 +37,7 @@ const storage = multer.diskStorage({
 const uplaod = multer({storage}); // anytime we need to upload a file we this variable
 
 /*ROUTES WITH FILES*/
-app.post("/auth/register", uplaod.single("picture"), register);
+app.post("/auth/register", uplaod.single("picture")/*middleware*/, register/*function controller*/);
 
 
 
