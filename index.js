@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import { error } from "console";
 
 /** CONFIGURATIONS */
 
@@ -34,3 +35,20 @@ const storage = multer.diskStorage({
     }
 }); //this configuration is coming from multer,, anytime anyone uplaods a file to our website its gonna be saved in this folder
 const uplaod = multer({storage}); // anytime we need to upload a file we this variable
+
+/*ROUTES WITH FILES*/
+app.post("/auth/register", uplaod.single("picture"), register);
+
+
+
+
+
+/**MONGOOSE SETUP */
+const PORT = process.env.PORT || 6001; // using this port just in case 3001 doesn't work
+mongoose.connect(process.env.MONGO_URL, { // we connect to database
+    useNewUrlParser: true, 
+    useUnifiedTopology: true,
+}).then(()=> {
+    app.listen(PORT, () => console.log(`Server Port: ${PORT}`))// callback function)
+}).catch((error) => console.log(`${error} did not connect`))
+
