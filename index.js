@@ -10,7 +10,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js"; 
 import userRoutes from "./routes/users.js";
-import { error } from "console";
+import postRoutes from "./routes/posts.js"
+import { register } from "./controllers/auth.js";
+import { createPost } from "./controllers/posts.js";
+import { verifyToken } from "./middleware/auth.js";
 
 /** CONFIGURATIONS */
 
@@ -41,12 +44,12 @@ const uplaod = multer({storage}); // anytime we need to upload a file we this va
 
 /*ROUTES WITH FILES*/
 app.post("/auth/register", uplaod.single("picture")/*middleware*/, register/*function controller*/);
+app.post("/posts", verifyToken, upload.single("picture"), createPost)
 
 /*Routes*/
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
-
-
+app.use("/posts", postRoutes);
 
 /**MONGOOSE SETUP */
 const PORT = process.env.PORT || 6001; // using this port just in case 3001 doesn't work
