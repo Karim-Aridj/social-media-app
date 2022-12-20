@@ -8,6 +8,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
+import authRoutes from "./routes/auth.js"; 
 import { error } from "console";
 
 /** CONFIGURATIONS */
@@ -39,7 +40,8 @@ const uplaod = multer({storage}); // anytime we need to upload a file we this va
 /*ROUTES WITH FILES*/
 app.post("/auth/register", uplaod.single("picture")/*middleware*/, register/*function controller*/);
 
-
+/*Routes*/
+app.use("/auth", authRoutes);
 
 
 
