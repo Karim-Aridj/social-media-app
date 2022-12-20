@@ -9,6 +9,7 @@ import morgan from "morgan";
 import path from "path";
 import { fileURLToPath } from "url";
 import authRoutes from "./routes/auth.js"; 
+import userRoutes from "./routes/users.js";
 import { error } from "console";
 
 /** CONFIGURATIONS */
@@ -37,11 +38,13 @@ const storage = multer.diskStorage({
 }); //this configuration is coming from multer,, anytime anyone uplaods a file to our website its gonna be saved in this folder
 const uplaod = multer({storage}); // anytime we need to upload a file we this variable
 
+
 /*ROUTES WITH FILES*/
 app.post("/auth/register", uplaod.single("picture")/*middleware*/, register/*function controller*/);
 
 /*Routes*/
 app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 
 
 
