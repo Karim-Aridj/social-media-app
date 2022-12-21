@@ -1,5 +1,5 @@
-import Post from "../models/Post.js"
-import User from "../models/User.js"
+import Post from "../models/Post.js";
+import User from "../models/User.js";
 
 /*Create*/
 
@@ -17,7 +17,7 @@ try {
         picturePath,
         likes: {},
         comments:{},
-    })
+    });
     await newPost.save();
 
     const post = await Post.find();
@@ -25,7 +25,7 @@ try {
 } catch (err) {
     res.status(409).json({message: err.message})
 }
-}
+};
 
 /*READ*/
 export const getFeedPosts = async (req, res) => {
@@ -35,7 +35,7 @@ export const getFeedPosts = async (req, res) => {
     } catch (error) {
         res.status(404).json({message: err.message})
     }
-}
+};
 
 export const getUserPosts = async (req, res) => {
     try {
@@ -45,26 +45,31 @@ export const getUserPosts = async (req, res) => {
     } catch (error) {
         res.status(404).json({message: err.message})
     }
-}
+};
 
 /*Read*/
 export const likePost = async (req, res) => {
     try {
         const {id} = req.params;
         const {userId} = req.body;
-        const post =await Post.findById(id);
-        const isLiked = post.likes.get(userId);
+        const post =await Post.findById(id); // we grab the post information
+        const isLiked = post.likes.get(userId);// we grab if the user liked it or not
 
-        if(isLiked) {
-            post.likes.set(userId, true);
+        if(isLiked) {  //if it is liked
+            post.likes.delete(userId, true); // we will delete the user 
+        } else{
+            post.likes.set(userId, true);// if it is non existant we will set it
         }
-        const updatePost =await Post.findByIdAndUpdate(
-            id,
-            {likes: post.likes}
-        )
 
-        res.status(200).json();
+
+        const updatedPost =await Post.findByIdAndUpdate(// depending on the result we will update the post
+            id,
+            {likes: post.likes},
+            {new: true}
+        );
+
+        res.status(200).json(updatedPost);// we pass the updated post to update the frontend
     } catch (error) {
         res.status(404).json({message: err.message})
     }
-}
+};

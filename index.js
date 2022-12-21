@@ -14,6 +14,9 @@ import postRoutes from "./routes/posts.js"
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
+import User from "./models/User.js";
+import Post from "./models/Post.js";
+import { users, posts } from "./data/index.js";
 
 /** CONFIGURATIONS */
 
@@ -39,11 +42,11 @@ const storage = multer.diskStorage({
         cb(null, file.originalname);
     }
 }); //this configuration is coming from multer,, anytime anyone uplaods a file to our website its gonna be saved in this folder
-const uplaod = multer({storage}); // anytime we need to upload a file we this variable
+const upload = multer({storage}); // anytime we need to upload a file we this variable
 
 
 /*ROUTES WITH FILES*/
-app.post("/auth/register", uplaod.single("picture")/*middleware*/, register/*function controller*/);
+app.post("/auth/register", upload.single("picture")/*middleware*/, register/*function controller*/);
 app.post("/posts", verifyToken, upload.single("picture"), createPost)
 
 /*Routes*/
@@ -52,11 +55,19 @@ app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 
 /**MONGOOSE SETUP */
+
 const PORT = process.env.PORT || 6001; // using this port just in case 3001 doesn't work
-mongoose.connect(process.env.MONGO_URL, { // we connect to database
+mongoose
+.connect(process.env.MONGO_URL, { // we connect to database
     useNewUrlParser: true, 
     useUnifiedTopology: true,
-}).then(()=> {
+})
+.then(()=> {
     app.listen(PORT, () => console.log(`Server Port: ${PORT}`))// callback function)
+
+   /*Add Data one time*/
+    //User.insertMany(users);
+   //Post.insertMany(posts);
+
 }).catch((error) => console.log(`${error} did not connect`))
 
